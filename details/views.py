@@ -33,8 +33,6 @@ def edit_customer(request,customer_name):
         customer_data.save()
     return HttpResponse(customer_data)
 
-
-
 @csrf_exempt
 def read_customer(request):
     customer_data=Customer.objects.filter(del_customer=False).values_list()
@@ -48,9 +46,12 @@ def search(request):
         return HttpResponse(search_data)
     
 def filter(request):
-     if request.method == 'GET':
-        data = request.GET.get('name')      
-        
+    if request.method == 'GET':
+        data = request.GET.get('name')
+        city = City.objects.filter(city_name=data).values_list().first()
+        customer_data = Customer.objects.filter(customer_city=city[0])
+        return HttpResponse(customer_data)      
+    return HttpResponse("Hello")
 
 def del_customer(request,customer_name):
     customer_data = Customer.objects.filter(customer_name=customer_name).first()
